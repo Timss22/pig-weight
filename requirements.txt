@@ -1,0 +1,21 @@
+# Core
+torch>=2.2
+torchvision>=0.17
+segmentation-models-pytorch>=0.3.3
+timm>=0.9
+
+# Data / image processing
+numpy>=1.26
+pandas>=2.2
+Pillow>=10.0
+opencv-python>=4.9
+albumentations>=1.4
+PyYAML>=6.0
+
+# SAM2 zero-shot baseline (see README for checkpoint download instructions)
+sam2 @ git+https://github.com/facebookresearch/sam2.git
+
+# Dev / testing
+pytest>=8.0
+matplotlib>=3.8
+tqdm>=4.66

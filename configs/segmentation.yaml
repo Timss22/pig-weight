@@ -1,0 +1,60 @@
+# Phase 1 segmentation config. Encoder swap, hyperparameter changes, and
+# path changes should all be possible by editing this file alone.
+
+data:
+  root: data/PigRGB-Weight
+  manifest_path: data/manifest.csv        # produced by audit_pigrgb.py
+  splits_path: data/splits.csv            # produced by src/data/splits.py
+  image_size: [960, 540]                  # [width, height], native resolution
+
+split:
+  seed: 42
+  train_frac: 0.70
+  val_frac: 0.15
+  test_frac: 0.15
+  n_weight_quintiles: 5
+
+model:
+  # "vanilla": from-scratch encoder (default). Swap to a pretrained
+  # segmentation_models_pytorch encoder (e.g. "timm-mobilenetv3_small_100",
+  # "resnet34") by changing `encoder_name` and `encoder_weights` only —
+  # no code changes required.
+  encoder_name: vanilla
+  encoder_weights: null                   # e.g. "imagenet", ignored for vanilla
+  in_channels: 3
+  out_channels: 1                         # binary pig/background mask
+
+augmentation:
+  # Generous ranges deliberately — anticipates open-house daylight
+  # variability at eventual deployment, not just the dataset's controlled
+  # lighting. See CLAUDE.md.
+  color_jitter:
+    brightness: 0.4
+    contrast: 0.4
+    saturation: 0.3
+    hue: 0.1
+  horizontal_flip_p: 0.5
+  vertical_flip_p: 0.5
+  rotation_degrees: 15
+  scale_range: [0.9, 1.1]
+
+training:
+  batch_size: 16
+  num_epochs: 100
+  learning_rate: 1.0e-3
+  weight_decay: 1.0e-4
+  optimizer: adamw
+  lr_scheduler: cosine
+  loss_dice_weight: 0.5
+  loss_bce_weight: 0.5
+  early_stopping_patience: 15
+  num_workers: 4
+  checkpoint_dir: checkpoints/segmentation
+  log_path: logs/segmentation_train.csv
+
+device: auto                              # cuda | mps | cpu | auto
+
+sam2_baseline:
+  checkpoint: sam2.1_hiera_base_plus
+  config_path: sam2.1_hiera_b+.yaml
+  checkpoint_path: checkpoints/sam2/sam2.1_hiera_base_plus.pt
