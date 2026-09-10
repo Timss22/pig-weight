@@ -1,0 +1,9 @@
+data/*
+!data/analyze.py
+.venv/
+__pycache__/
+*.png
+.DS_Store
+*.pyc
+checkpoints/
+*.egg-info/
